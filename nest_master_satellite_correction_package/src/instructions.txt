@@ -1,0 +1,60 @@
+source /opt/ros/melodic/setup.bash
+
+cd /home/pi/ros_catkin_ws/src
+catkin_create_pkg talker_listener_test std_msgs rospy roscpp
+cd /home/pi/ros_catkin_ws
+catkin_make
+
+source /home/pi/ros_catkin_ws/devel/setup.bash
+
+Start the master
+We need to select one machine to run the master; we'll go with master01. The first step is start the master:
+
+
+ssh master01
+roscore
+Start the listener
+Now we'll start a listener on master_01, configuring ROS_MASTER_URI so that we use the master that was just started:
+
+
+ssh master01
+export ROS_MASTER_URI=http://master01:11311
+rosrun talker_listener_test listener.py
+
+Start the talker
+Next we'll start a talker on slave_01, also configuring ROS_MASTER_URI so that the master on master01 is used:
+
+
+ssh slave01
+export ROS_MASTER_URI=http://master01:11311
+rosrun talker_listener_test talker.py
+Voila: you should now see the listener on master_01 receiving messages from the talker on slave01.
+
+Note that the sequence of talker / listener startup doesn't matter; the nodes can be started in any order. The only requirement is that you start the master before starting any nodes.
+
+Variation: connecting in the other direction
+Now let's try it in the other direction. Leaving the master running on master_01, kill the talker and listener, then bring them up on opposite machines.
+
+First a listener on slave01:
+
+
+ssh slave_01
+export ROS_MASTER_URI=http://master01:11311
+rosrun talker_listener_test listener.py
+Now a talker on master01:
+
+
+ssh master_01
+export ROS_MASTER_URI=http://master01:11311
+rosrun talker_listener_test talker.py
+rostopic
+For testing you can use the rostopic tool on all machines which are connected to the core.
+
+You get a list of all available topics. If you are not connected to a core there is an error.
+
+
+rostopic list
+In wireless networks it is sometimes necessary to check if there is a connection and messages still come. For short tests it is handy to print out the messages.
+
+
+rostopic echo /topic_name
