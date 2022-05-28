@@ -9,4 +9,4 @@ NC='\033[0m' # No Color
 
 source /home/pi/ros_catkin_ws/devel/setup.bash
 export ROS_MASTER_URI=http://master01:11311
-rosrun talker_listener_test talker.py
+rosrun nest_slave_satellite_correction_package talker.py
