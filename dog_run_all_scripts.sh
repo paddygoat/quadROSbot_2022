@@ -19,12 +19,12 @@ printf "${GREEN}Run all scripts${NC}\n"
 sleep 5
 
 # cd ~/Desktop/ROS_startup_scripts/ && bash T265_Tracking_Module.sh
-printf "${GREEN}start nest_satellite_correction.sh ....${NC}\n"
+printf "${GREEN}start dog_satellite_correction.sh ....${NC}\n"
 echo ""
 
 cd /home/pi/Desktop/ROS_startup_scripts/dog_master_satellite_correction/ && ./dog_master_satellite_correction.sh
 sleep 5
-xdotool getactivewindow windowmove 1200 100 windowsize 600 370 && lxterminal -e "sshpass -p "whales" ssh -Y pi@192.168.1.200 -o StrictHostKeyChecking=no ./dog_slave_satellite_correction.sh"
+xdotool getactivewindow windowmove 1200 100 windowsize 600 370 && lxterminal -e "sshpass -p "whales" ssh -Y pi@192.168.1.236 -o StrictHostKeyChecking=no ./dog_slave_satellite_correction.sh"
 sleep 5
 xdotool getactivewindow windowmove 0 800 windowsize 600 370 && cd /home/pi/Desktop/ROS_startup_scripts/dog_arduino_rosserial/dog_arduino_rx/ && ./dog_arduino_rx.sh
 sleep 5
