@@ -25,9 +25,10 @@ const int LED_pin_5 = 5;
 
 ros::NodeHandle  nh;
 std_msgs::String str_msg;
-ros::Publisher chatter("received_from_dog", &str_msg);
+ros::Publisher chatter("correction_data_from_nest", &str_msg);
 
-char inChar[1024];
+char inChar[256];
+// char previous_inChar[256];
 int previous_incomingMsgId = 0;
 
 void setup() 
@@ -58,10 +59,10 @@ void setup()
   delay(5000);             // Do not delete this or it may brick the MCU.
   digitalWrite(LED_pin_7, LOW);
 
-  Serial.begin(115200);                   // initialize serial
+  // Serial.begin(115200);                   // initialize serial
   // while (!Serial);
 
-  Serial.println("LoRa Reciever");
+  Serial.println("LoRa Reciever on Dog");
 
   // override the default CS, reset, and IRQ pins (optional)
   LoRa.setPins(csPin, resetPin, irqPin);// set CS, reset, IRQ pin
@@ -90,14 +91,18 @@ void loop()
   onReceive(LoRa.parsePacket());
   delay(5);
   // Serial.print("inChar: ");Serial.println(inChar);
-  // str_msg.data = inChar;
-  // chatter.publish( &str_msg );
-  // nh.spinOnce();
+  str_msg.data = inChar;
+  // char hello[13] = "hello world!";
+  // str_msg.data = hello;
+  chatter.publish( &str_msg );
+  nh.spinOnce();
 }
 
 char onReceive(int packetSize) 
 {
   if (packetSize == 0) return;          // if there's no packet, return
+
+  memset (inChar, 0, sizeof(inChar));
 
   // read packet header bytes:
   int recipient = LoRa.read();          // recipient address
@@ -114,6 +119,8 @@ char onReceive(int packetSize)
     Serial.print(inChar[i]);
     i++;
   }
+  // inChar[i] = "\0";     // This terminates the array?
+  
 
   /*
   if (incomingLength != incoming.length()) 
