@@ -7,11 +7,13 @@
 
 std_msgs::String chatter;
 std_msgs::String correction_data_msg2;
+// std_msgs::String cycle_time_msg;
+// ros::Publisher chatter1("nest_cycle_time", &cycle_time_msg);
 
 ros::NodeHandle  nh;
 
 const long frequency = 433.5E6;  // LoRa Frequency
-int spreading = 10;             // spreading factor
+int spreading = 12;             // spreading factor ranges from 6-12,default 7 see API docs
 const int csPin = 4;          // LoRa radio chip select
 const int resetPin = 2;        // LoRa radio reset
 const int irqPin = 3;          // change for your board; must be a hardware interrupt pin
@@ -28,6 +30,8 @@ byte destination = 0xFF;      // destination to send to
 long lastSendTime = 0;        // last send time
 int interval = 2000;          // interval between sends
 
+// char cycle_time[10];
+
 
 void messageCb1( const std_msgs::Empty& toggle_msg)
 {
@@ -40,6 +44,7 @@ void messageCb2( const std_msgs::String chatter)
 }
 void messageCb3( const std_msgs::String correction_data_msg2)
 {
+  // unsigned long currentMillis1 = millis();
   digitalWrite(6, HIGH-digitalRead(6));   // toggle the led
   correction_data = correction_data_msg2.data;
   if ((correction_data == "start") || (correction_data == "finish"))
@@ -73,13 +78,18 @@ void messageCb3( const std_msgs::String correction_data_msg2)
   LoRa.print(correction_data);
   // LoRa.print(counter);
   LoRa.endPacket(true); // true = async / non-blocking mode
+  
   digitalWrite(8, LOW);
   msgCount++;
   if (correction_data == "finish")
   {
     msgCount = 0;
   }
-  // counter++;
+  // unsigned long currentMillis2 = millis();
+  // String(currentMillis2 - currentMillis1).toCharArray(cycle_time,10);
+  // myString.toCharArray(buf, len)
+  // cycle_time_msg.data = cycle_time;
+  // chatter1.publish( &cycle_time_msg );
 }
 
 // ros::Subscriber<std_msgs::Empty> sub1("toggle_led", &messageCb1 );
@@ -104,6 +114,7 @@ void setup()
   digitalWrite(7,LOW);
   digitalWrite(8,LOW);
   nh.initNode();
+  // nh.advertise(chatter1);
   // nh.subscribe(sub1);
   // nh.subscribe(sub2);
   nh.subscribe(sub3);
