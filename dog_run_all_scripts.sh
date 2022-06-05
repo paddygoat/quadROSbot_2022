@@ -16,7 +16,10 @@ pgrep bash | xargs -n1 pstree -p -c
 
 
 printf "${GREEN}Run all scripts${NC}\n" 
-sleep 5
+
+xdotool getactivewindow windowmove 600 400 windowsize 600 370 && ./dog_reboot_computers_on_network.sh
+
+sleep 40
 
 # cd ~/Desktop/ROS_startup_scripts/ && bash T265_Tracking_Module.sh
 printf "${GREEN}start dog_satellite_correction.sh ....${NC}\n"
