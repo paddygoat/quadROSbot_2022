@@ -19,7 +19,7 @@ source /opt/ros/melodic/setup.bash
 
 printf "${GREEN}Run all scripts${NC}\n" 
 
-xdotool getactivewindow windowmove 0 100 windowsize 600 370 && ./reboot_computers_on_network.sh
+xdotool getactivewindow windowmove 0 100 windowsize 600 370 && ./nest_reboot_computers_on_network.sh
 
 sleep 40
 
