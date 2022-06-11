@@ -65,6 +65,7 @@ void setup()
   }
 
   LoRa.setSpreadingFactor(spreading);           // ranges from 6-12,default 7 see API docs
+  LoRa.setSyncWord(0x34);
   Serial.println("LoRa init succeeded.");
   // LoRa.setGain(6);   // Ranges from 0 to 6 where 6 is max.
   // LoRa.writeRegister(0x0C,0x23);  // This should be max LNA gain.

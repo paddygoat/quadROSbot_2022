@@ -46,7 +46,7 @@ void messageCb3( const std_msgs::String correction_data_msg2)
 {
   unsigned long currentMicros1 = micros();
   digitalWrite(6, HIGH-digitalRead(6));   // toggle the led
-  correction_data = correction_data_msg2.data;
+  correction_data = correction_data_msg2.data; // String
   if ((correction_data == "start") || (correction_data == "finish"))
   {
     digitalWrite(7, HIGH-digitalRead(7));   // toggle the led
@@ -124,6 +124,7 @@ void setup()
   }
   // LoRa.setSpreadingFactor(12);           // ranges from 6-12,default 7 see API docs
   LoRa.setSpreadingFactor(spreading);           // ranges from 6-12,default 7 see API docs
+  LoRa.setSyncWord(0x34);
   Serial.println("LoRa init succeeded.");
   // LoRa.setGain(6);   // Ranges from 0 to 6 where 6 is max.
   // LoRa.writeRegister(0x0C,0x23);  // This should be max LNA gain.
