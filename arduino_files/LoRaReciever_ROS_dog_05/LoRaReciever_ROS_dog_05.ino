@@ -9,13 +9,41 @@ ros::Publisher chatter("correction_data_from_nest", &str_msg);
 
 const long frequency = 433.5E6;  // LoRa Frequency
 int spreading = 7;             // spreading factor ranges from 6-12,default 7 see API docs
-const int csPin = 4;          // LoRa radio chip select
-const int resetPin = 2;        // LoRa radio reset
-const int irqPin = 3;          // change for your board; must be a hardware interrupt pin
+const int csPin = 39;          // LoRa radio chip select
+const int resetPin = 18;        // LoRa radio reset
+const int irqPin = 20;          // change for your board; must be a hardware interrupt pin
 
-int ledState_03 = LOW;
-unsigned long prevMillis_03 = 0;
-const long interval_03 = 1400;
+
+int ledState_pink = LOW;
+int pink_pin = A1;
+unsigned long prevMillis_pink = 0;
+const long interval_pink = 300;
+
+int ledState_blue = LOW;
+int blue_pin = A0;
+unsigned long prevMillis_blue = 0;
+const long interval_blue = 400;
+
+int ledState_green = LOW;
+int green_pin = A3;
+unsigned long prevMillis_green = 0;
+const long interval_green = 500;
+
+int ledState_yellow = LOW;
+int yellow_pin = 13;
+unsigned long prevMillis_yellow = 0;
+const long interval_yellow = 600;
+
+int ledState_orange = LOW;
+int orange_pin = 2;
+unsigned long prevMillis_orange = 0;
+const long interval_orange = 700;
+
+int ledState_red = LOW;
+int red_pin = 4;
+unsigned long prevMillis_red = 0;
+const long interval_red = 800;
+
 String correction_data = "";
 
 String outgoing;              // outgoing message
@@ -29,30 +57,26 @@ char inChar[256];
 
 void setup() 
 {
-  // Serial.begin(115200);
+  // Serial.begin(57600);
   // while (!Serial);
 
   nh.initNode();
   nh.advertise(chatter);
 
-  tone(9, 2000, 200);
-  delay(200);
-  tone(9, 1000, 200);
-  delay(200);
+  pinMode(pink_pin, OUTPUT);
+  pinMode(blue_pin, OUTPUT);
+  pinMode(green_pin, OUTPUT);
+  pinMode(yellow_pin, OUTPUT);
+  pinMode(orange_pin, OUTPUT);
+  pinMode(red_pin, OUTPUT);
 
-  pinMode(5, OUTPUT);
-  pinMode(6, OUTPUT);
-  pinMode(7, OUTPUT);
-  pinMode(8, OUTPUT);
-  digitalWrite(5,HIGH);
-  digitalWrite(6,HIGH);
-  digitalWrite(7,HIGH);
-  digitalWrite(8,HIGH);
-  delay(500);
-  digitalWrite(5,LOW);
-  digitalWrite(6,LOW);
-  digitalWrite(7,LOW);
-  digitalWrite(8,LOW);
+  digitalWrite(pink_pin,LOW);
+  digitalWrite(blue_pin,LOW);
+  digitalWrite(green_pin,LOW);
+  digitalWrite(yellow_pin,LOW);
+  digitalWrite(orange_pin,LOW);
+  digitalWrite(red_pin,LOW);
+  delay(5000);
 
   Serial.println("LoRa Receiver Callback");
 
@@ -93,14 +117,14 @@ void setup()
 
 void loop() 
 {
-  blinkLED_5();
+  blinkGreenLED();
   // do nothing
 }
 
 void onReceive(int packetSize) 
 {
   memset (inChar, 0, sizeof(inChar));
-  digitalWrite(6, HIGH-digitalRead(6));   // toggle the led
+  digitalWrite(blue_pin, HIGH-digitalRead(blue_pin));   // toggle the led
   // received a packet
   Serial.print("Received packet: '");
 
@@ -143,18 +167,96 @@ void onReceive(int packetSize)
 }
 
 
-void blinkLED_5() 
+void blinkOrangeLED() 
 {
   unsigned long currentMillis = millis();
-  if (currentMillis - prevMillis_03 >= interval_03) 
+  if (currentMillis - prevMillis_orange >= interval_orange) 
   {
-    prevMillis_03 = currentMillis;
-    if (ledState_03 == LOW) 
+    prevMillis_orange = currentMillis;
+    if (ledState_orange == LOW) 
     {
-      ledState_03 = HIGH;
+      ledState_orange = HIGH;
     } else {
-      ledState_03 = LOW;
+      ledState_orange = LOW;
     }
-    digitalWrite(5, ledState_03);
+    digitalWrite(orange_pin, ledState_orange);
+  }
+}
+
+void blinkRedLED() 
+{
+  unsigned long currentMillis = millis();
+  if (currentMillis - prevMillis_red >= interval_red) 
+  {
+    prevMillis_red = currentMillis;
+    if (ledState_red == LOW) 
+    {
+      ledState_red = HIGH;
+    } else {
+      ledState_red = LOW;
+    }
+    digitalWrite(red_pin, ledState_red);
+  }
+}
+
+void blinkPinkLED() 
+{
+  unsigned long currentMillis = millis();
+  if (currentMillis - prevMillis_pink >= interval_pink) 
+  {
+    prevMillis_pink = currentMillis;
+    if (ledState_pink == LOW) 
+    {
+      ledState_pink = HIGH;
+    } else {
+      ledState_pink = LOW;
+    }
+    digitalWrite(pink_pin, ledState_pink);
+  }
+}
+void blinkBlueLED() 
+{
+  unsigned long currentMillis = millis();
+  if (currentMillis - prevMillis_blue >= interval_blue) 
+  {
+    prevMillis_blue = currentMillis;
+    if (ledState_blue == LOW) 
+    {
+      ledState_blue = HIGH;
+    } else {
+      ledState_blue = LOW;
+    }
+    digitalWrite(blue_pin, ledState_blue);
+  }
+}
+void blinkYellowLED() 
+{
+  unsigned long currentMillis = millis();
+  if (currentMillis - prevMillis_yellow >= interval_yellow) 
+  {
+    prevMillis_yellow = currentMillis;
+    if (ledState_yellow == LOW) 
+    {
+      ledState_yellow = HIGH;
+    } else {
+      ledState_yellow = LOW;
+    }
+    digitalWrite(yellow_pin, ledState_yellow);
+  }
+}
+
+void blinkGreenLED() 
+{
+  unsigned long currentMillis = millis();
+  if (currentMillis - prevMillis_green >= interval_green) 
+  {
+    prevMillis_green = currentMillis;
+    if (ledState_green == LOW) 
+    {
+      ledState_green = HIGH;
+    } else {
+      ledState_green = LOW;
+    }
+    digitalWrite(green_pin, ledState_green);
   }
 }
