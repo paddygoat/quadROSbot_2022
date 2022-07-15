@@ -72,11 +72,11 @@ void messageCb2( const std_msgs::String chatter)
 void messageCb3( const std_msgs::String correction_data_msg2)
 {
   unsigned long currentMicros1 = micros();
-  digitalWrite(orange_pin, HIGH-digitalRead(orange_pin));   // toggle the led
+  // digitalWrite(orange_pin, HIGH-digitalRead(orange_pin));   // toggle the led
   correction_data = correction_data_msg2.data; // String
   if ((correction_data == "start") || (correction_data == "finish"))
   {
-    digitalWrite(pink_pin, HIGH-digitalRead(pink_pin));   // toggle the led
+    // digitalWrite(pink_pin, HIGH-digitalRead(pink_pin));   // toggle the led
   }
 
   // wait until the radio is ready to send a packet
@@ -119,7 +119,7 @@ ros::Subscriber<std_msgs::String> sub3("correction_data_msg2", &messageCb3 );
 
 void setup()
 { 
-  Serial.begin(57600);
+  // Serial.begin(57600);
   // while (!Serial);
   correction_data.reserve(512);
 
