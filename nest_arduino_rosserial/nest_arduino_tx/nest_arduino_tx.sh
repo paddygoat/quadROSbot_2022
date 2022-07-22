@@ -12,7 +12,7 @@ echo ""
 xdotool getactivewindow windowmove 0 500 windowsize 600 370 && lxterminal --command='./terminal_1.sh'
 sleep 5
 
-# xdotool getactivewindow windowmove 600 500 windowsize 600 370 && lxterminal --command='./terminal_2.sh'
+xdotool getactivewindow windowmove 20 500 windowsize 600 370 && lxterminal --command='./terminal_2.sh'
 # sleep 10
 
 xdotool getactivewindow windowmove 600 500 windowsize 600 370 &&
