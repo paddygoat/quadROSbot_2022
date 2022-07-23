@@ -51,7 +51,7 @@ const long interval_red = 800;
 String correction_data = "";
 
 String outgoing;              // outgoing message
-byte msgCount = 0;            // count of outgoing messages
+int msgCount = 0;            // count of outgoing messages
 byte localAddress = 0xBB;     // address of this device
 byte destination = 0xFF;      // destination to send to
 long lastSendTime = 0;        // last send time
@@ -102,10 +102,10 @@ void messageCb3( const std_msgs::String correction_data_msg_B2)
   
   digitalWrite(blue_pin, LOW);
   msgCount++;
-  if (correction_data == "finish")
-  {
-    msgCount = 0;
-  }
+  // if (correction_data == "finish")
+  // {
+  //   msgCount = 0;
+  // }
   unsigned long currentMicros2 = micros();
   String(currentMicros2 - currentMicros1).toCharArray(cycle_time,10);
   // myString.toCharArray(buf, len)
