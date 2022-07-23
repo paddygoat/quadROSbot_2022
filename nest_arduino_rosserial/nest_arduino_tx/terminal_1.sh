@@ -9,7 +9,7 @@ printf "${GREEN}rosserial_python serial_node.py port:=/dev/ttyUSB0.${NC}\n"
 echo ""
 
 source /home/pi/ros_catkin_ws/devel/setup.bash && \
-rosrun rosserial_python serial_node.py __name:="MCU 0" _port:=/dev/ttyUSB0
+rosrun rosserial_python serial_node.py __name:="MCU_0" _port:=/dev/ttyUSB0
 
 
 
