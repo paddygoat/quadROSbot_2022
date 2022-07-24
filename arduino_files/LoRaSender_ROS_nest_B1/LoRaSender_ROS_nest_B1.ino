@@ -18,6 +18,9 @@ const int csPin = 39;          // LoRa radio chip select
 const int resetPin = 18;        // LoRa radio reset
 const int irqPin = 20;          // change for your board; must be a hardware interrupt pin
 
+unsigned long prevMillis_MCU_ID;
+const long interval_MCU_ID = 10000;
+
 int ledState_pink = LOW;
 int pink_pin = A1;
 unsigned long prevMillis_pink = 0;
@@ -51,7 +54,7 @@ const long interval_red = 800;
 String correction_data = "";
 
 String outgoing;              // outgoing message
-int msgCount = 0;            // count of outgoing messages
+byte msgCount = 0;            // count of outgoing messages
 byte localAddress = 0xBB;     // address of this device
 byte destination = 0xFF;      // destination to send to
 long lastSendTime = 0;        // last send time
@@ -177,6 +180,7 @@ void setup()
 void loop()
 {  
   blinkGreenLED();
+  MCU_ID();
   nh.spinOnce();
   delay(5);
 }
@@ -272,5 +276,15 @@ void blinkGreenLED()
       ledState_green = LOW;
     }
     digitalWrite(green_pin, ledState_green);
+  }
+}
+
+void MCU_ID() 
+{
+  unsigned long currentMillis = millis();
+  if (currentMillis - prevMillis_MCU_ID >= interval_MCU_ID) 
+  {
+    prevMillis_MCU_ID = currentMillis;
+    Serial.println("I am MCU_B1");
   }
 }
