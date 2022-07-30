@@ -8,10 +8,13 @@ std_msgs::String str_msg;
 ros::Publisher pub_A1("correction_data_from_nest_A1", &str_msg);
 
 const long frequency = 433.5E6;  // LoRa Frequency
-int spreading = 7;             // spreading factor ranges from 6-12,default 7 see API docs
+const long bandWidth = 250000;  // LoRa Bandwidth (smaller = longer range)
+int spreading = 7;             // spreading factor ranges from 6-12,default 7 (larger = longer range)
 const int csPin = 39;          // LoRa radio chip select
 const int resetPin = 18;        // LoRa radio reset
 const int irqPin = 20;          // change for your board; must be a hardware interrupt pin
+const int syncWord = 0x34;
+const int intended_recipient = 0xA1;
 
 unsigned long prevMillis_MCU_ID;
 const long interval_MCU_ID = 10000;
@@ -79,7 +82,8 @@ void setup()
   digitalWrite(orange_pin,LOW);
   digitalWrite(red_pin,LOW);
   delay(5000);
-
+  Serial.println("");
+  Serial.println("I am MCU_A1");
   Serial.println("LoRa Receiver Callback");
 
   LoRa.setPins(csPin, resetPin, irqPin);// set CS, reset, IRQ pin
@@ -91,14 +95,14 @@ void setup()
   }
 
   LoRa.setSpreadingFactor(spreading);           // ranges from 6-12,default 7 see API docs
-  LoRa.setSyncWord(0x34);
-  Serial.println("LoRa init succeeded.");
+  LoRa.setSyncWord(syncWord);
+  MCU_ID();
   // LoRa.setGain(6);   // Ranges from 0 to 6 where 6 is max.
   // LoRa.writeRegister(0x0C,0x23);  // This should be max LNA gain.
   
   Serial.println("LoRa init succeeded.");
   Serial.println("LoRa.setSignalBandwidth: ");
-  LoRa.setSignalBandwidth(500000);
+  LoRa.setSignalBandwidth(bandWidth);
   Serial.print("LoRa.getSignalBandwidth: ");Serial.println(LoRa.getSignalBandwidth());
   Serial.print("LoRa.getSpreadingFactor: ");Serial.println(LoRa.getSpreadingFactor());
   Serial.print("LoRa.readRegister RegModemConfig1(0x1d): ");Serial.print("B");Serial.println(LoRa.readRegister(0x1d),BIN);
@@ -127,48 +131,54 @@ void loop()
 void onReceive(int packetSize) 
 {
   memset (inChar, 0, sizeof(inChar));
-  digitalWrite(blue_pin, HIGH-digitalRead(blue_pin));   // toggle the led
   // received a packet
-  Serial.print("Received packet: '");
+  // Serial.print("Received packet: '");
 
   // read packet header bytes:
   int recipient = LoRa.read();          // recipient address
-  byte sender = LoRa.read();            // sender address
-  byte incomingMsgId = LoRa.read();     // incoming msg ID
-  byte incomingLength = LoRa.read();    // incoming msg length
-  // byte crc = LoRa.read();    // incoming crc value
-
-  // read packet
-  for (int i = 0; i < (packetSize-4); i++) 
+  if (recipient == intended_recipient)
   {
-    inChar[i] = (char)LoRa.read();
-    Serial.print(inChar[i]);
-  }
-  Serial.print("'");
+    digitalWrite(blue_pin, HIGH);
+    byte sender = LoRa.read();            // sender address
+    byte incomingMsgId = LoRa.read();     // incoming msg ID
+    byte incomingLength = LoRa.read();    // incoming msg length
+    // byte crc = LoRa.read();    // incoming crc value
+
+    // read packet
+    for (int i = 0; i < (packetSize-4); i++) 
+    {
+      inChar[i] = (char)LoRa.read();
+      // Serial.print(inChar[i]);
+    }
+    digitalWrite(blue_pin, LOW);
+
+  // Serial.print("'");
   // print RSSI of packet
-  Serial.print(" with RSSI ");
-  Serial.print(LoRa.packetRssi());
+  // Serial.print(" with RSSI ");
+  // Serial.print(LoRa.packetRssi());
   // Serial.println("Message recipient: " + String(recipient));
   // Serial.println("Message sender: " + String(sender));
-  Serial.println(" Message ID: " + String(incomingMsgId));
+  // Serial.println(" Message ID: " + String(incomingMsgId));
   // Serial.println("Message incomingLength: " + String(incomingLength));
- 
+
+ /*
   if (previous_incomingMsgId != (incomingMsgId - 0x01) && (incomingMsgId != 0x00))
   {
-    Serial.println("An incoming message was missed - slow down the data transmit rate !!");
+    // Serial.println("An incoming message was missed - slow down the data transmit rate !!");
     // tone(9, 1000, 50);
     digitalWrite(red_pin,HIGH);
     delay(50);
     digitalWrite(red_pin,LOW);
   }
   previous_incomingMsgId = int(incomingMsgId);
-
+  */
 
   str_msg.data = inChar;
   // char hello[13] = "hello world!";
   // str_msg.data = hello;
   pub_A1.publish( &str_msg );
   nh.spinOnce();
+  }
 }
 
 
