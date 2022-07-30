@@ -2,9 +2,6 @@
 # cd /home/paddy/Desktop/RoboController/ && ./run_all_scripts_on_laptop.sh
 
 
-# masternest = ssh -Y pi@192.168.1.134
-# slave01 = ssh -Y pi@192.168.1.200 -o StrictHostKeyChecking=no
-
 RED='\033[0;31m'
 BLUE='\033[0;34m'
 GREEN='\033[0;32m'
@@ -31,7 +28,10 @@ gnome-terminal --geometry=59x3-1200+0 -- bash -c "sshpass -p "whales" ssh -t pi@
 sudo reboot \
 ; exec bash"
 
-sleep 40
+for i in $(seq 1 40); do
+  echo -ne "$i\033[0K\r"
+  sleep 1
+done
 
 # First row of terminals:
 
@@ -50,8 +50,33 @@ gnome-terminal --geometry=59x12-1100+0 -- bash -c "sshpass -p "whales" ssh -t pi
 sleep 5
 
 # masternest: 192.168.1.134
+# rosserial python node on USB0:
 gnome-terminal --geometry=59x12-550+0 -- bash -c "sshpass -p "whales" ssh -t pi@192.168.1.134 -o StrictHostKeyChecking=no \
 /home/pi/Desktop/ROS_startup_scripts/nest_arduino_rosserial/nest_arduino_tx/./terminal_1.sh \
+; exec bash"
+
+sleep 1
+
+# masternest: 192.168.1.134
+# rosserial python node on USB1:
+gnome-terminal --geometry=59x12-550+0 -- bash -c "sshpass -p "whales" ssh -t pi@192.168.1.134 -o StrictHostKeyChecking=no \
+/home/pi/Desktop/ROS_startup_scripts/nest_arduino_rosserial/nest_arduino_tx/./terminal_2.sh \
+; exec bash"
+
+sleep 1
+
+# masternest: 192.168.1.134
+# rosserial python node on USB2:
+gnome-terminal --geometry=59x12-550+0 -- bash -c "sshpass -p "whales" ssh -t pi@192.168.1.134 -o StrictHostKeyChecking=no \
+/home/pi/Desktop/ROS_startup_scripts/nest_arduino_rosserial/nest_arduino_tx/./terminal_3.sh \
+; exec bash"
+
+sleep 1
+
+# masternest: 192.168.1.134
+# rosserial python node on USB3:
+gnome-terminal --geometry=59x12-550+0 -- bash -c "sshpass -p "whales" ssh -t pi@192.168.1.134 -o StrictHostKeyChecking=no \
+/home/pi/Desktop/ROS_startup_scripts/nest_arduino_rosserial/nest_arduino_tx/./terminal_4.sh \
 ; exec bash"
 
 sleep 1
@@ -78,12 +103,35 @@ gnome-terminal --geometry=59x12-1100+300 -- bash -c "sshpass -p "whales" ssh -t 
 ; exec bash"
 
 sleep 5
+
 # masterdog: 192.168.1.161
 gnome-terminal --geometry=59x12-550+300 -- bash -c "sshpass -p "whales" ssh -t pi@192.168.1.161 -o StrictHostKeyChecking=no \
 /home/pi/Desktop/ROS_startup_scripts/dog_arduino_rosserial/dog_arduino_rx/./terminal_1.sh \
 ; exec bash"
 
 sleep 1
+
+# masterdog: 192.168.1.161
+gnome-terminal --geometry=59x12-550+300 -- bash -c "sshpass -p "whales" ssh -t pi@192.168.1.161 -o StrictHostKeyChecking=no \
+/home/pi/Desktop/ROS_startup_scripts/dog_arduino_rosserial/dog_arduino_rx/./terminal_2.sh \
+; exec bash"
+
+sleep 1
+
+# masterdog: 192.168.1.161
+gnome-terminal --geometry=59x12-550+300 -- bash -c "sshpass -p "whales" ssh -t pi@192.168.1.161 -o StrictHostKeyChecking=no \
+/home/pi/Desktop/ROS_startup_scripts/dog_arduino_rosserial/dog_arduino_rx/./terminal_3.sh \
+; exec bash"
+
+sleep 1
+
+# masterdog: 192.168.1.161
+gnome-terminal --geometry=59x12-550+300 -- bash -c "sshpass -p "whales" ssh -t pi@192.168.1.161 -o StrictHostKeyChecking=no \
+/home/pi/Desktop/ROS_startup_scripts/dog_arduino_rosserial/dog_arduino_rx/./terminal_4.sh \
+; exec bash"
+
+sleep 1
+
 # slavedog: 192.168.1.236
 gnome-terminal --geometry=59x12-0+300 -- bash -c "sshpass -p "whales" ssh -t pi@192.168.1.236 -o StrictHostKeyChecking=no \
 ./dog_slave_satellite_correction.sh \
@@ -91,13 +139,32 @@ gnome-terminal --geometry=59x12-0+300 -- bash -c "sshpass -p "whales" ssh -t pi@
 
 # Third row of terminals:
 
+# masternest: 192.168.1.134
+gnome-terminal --geometry=59x12-1100+596 -- bash -c "sshpass -p "whales" ssh -t pi@192.168.1.134 -o StrictHostKeyChecking=no \
+/home/pi/Desktop/ROS_startup_scripts/./ros_echo_arduino_tx_timings.sh \
+; exec bash"
+
 printf "${GREEN}.... all finished.${NC}\n"
+
 exit
 
+# masternest: 192.168.1.134
+# This will copy from masternest to user=nobody and is done on nobody's machine.
+# scp pi@192.168.1.134:/var/log/* /home/nobody/copy/.
 
 
 
+while true; do foo; sleep 2; done
 
+i=0; while [ $i -lt 5 ]; do echo "."; sleep 1; i = $i + 1; done
+while((i++ < 20)); do echo "hi \033[0K\r"; sleep 1; done
+
+
+for i in $(seq 1 40); do
+  echo -ne "$i%\033[0K\r"
+  sleep 1
+done
+echo "ended"
 
 
 
