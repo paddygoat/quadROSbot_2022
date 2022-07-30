@@ -20,7 +20,9 @@ const int resetPin = 18;        // LoRa radio reset
 const int irqPin = 20;          // change for your board; must be a hardware interrupt pin
 const int syncWord = 0x35;
 byte localAddress = 0xB2;     // address of this device
-byte destination = 0xA2;      // destination to send to
+byte destination = 0xA2;      // destination to send to.
+const int codingRate = 8;     // ranges from 5 to 8. 8 gives better error resistance.
+
 
 unsigned long prevMillis_MCU_ID;
 const long interval_MCU_ID = 10000;
@@ -162,7 +164,7 @@ void setup()
     blinkRedLED();
     while (1);
   }
-  // LoRa.setSpreadingFactor(12);           // ranges from 6-12,default 7 see API docs
+  LoRa.setCodingRate4(codingRate);    // ranges from 5 to 8.
   LoRa.setSpreadingFactor(spreading);           // ranges from 6-12,default 7 see API docs
   LoRa.setSyncWord(syncWord);
   Serial.println("LoRa init succeeded.");
