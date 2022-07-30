@@ -13,10 +13,14 @@ ros::Publisher chatter1("nest_cycle_time", &cycle_time_msg);
 ros::NodeHandle  nh;
 
 const long frequency = 433.5E6;  // LoRa Frequency
-int spreading = 7;             // spreading factor ranges from 6-12,default 7 see API docs
+const long bandWidth = 250000;  // LoRa Bandwidth (smaller = longer range)
+int spreading = 7;             // spreading factor ranges from 6-12,default 7 (larger = longer range)
 const int csPin = 39;          // LoRa radio chip select
 const int resetPin = 18;        // LoRa radio reset
 const int irqPin = 20;          // change for your board; must be a hardware interrupt pin
+const int syncWord = 0x34;
+byte localAddress = 0xB1;     // address of this device
+byte destination = 0xA1;      // destination to send to
 
 unsigned long prevMillis_MCU_ID;
 const long interval_MCU_ID = 10000;
@@ -55,8 +59,6 @@ String correction_data = "";
 
 String outgoing;              // outgoing message
 byte msgCount = 0;            // count of outgoing messages
-byte localAddress = 0xBB;     // address of this device
-byte destination = 0xFF;      // destination to send to
 long lastSendTime = 0;        // last send time
 int interval = 2000;          // interval between sends
 
@@ -147,6 +149,8 @@ void setup()
   // nh.subscribe(sub2);
   nh.subscribe(sub3);
 
+  Serial.println("");
+  Serial.println("I am MCU_B1");
   Serial.println("LoRa Sender non-blocking");
     // override the default CS, reset, and IRQ pins (optional)
   LoRa.setPins(csPin, resetPin, irqPin);// set CS, reset, IRQ pin
@@ -159,21 +163,19 @@ void setup()
   }
   // LoRa.setSpreadingFactor(12);           // ranges from 6-12,default 7 see API docs
   LoRa.setSpreadingFactor(spreading);           // ranges from 6-12,default 7 see API docs
-  LoRa.setSyncWord(0x34);
+  LoRa.setSyncWord(syncWord);
   Serial.println("LoRa init succeeded.");
   // LoRa.setGain(6);   // Ranges from 0 to 6 where 6 is max.
   // LoRa.writeRegister(0x0C,0x23);  // This should be max LNA gain.
-  
-  Serial.println("LoRa init succeeded.");
   Serial.println("LoRa.setSignalBandwidth: ");
-  LoRa.setSignalBandwidth(500000);
+  LoRa.setSignalBandwidth(bandWidth);
   Serial.print("LoRa.getSignalBandwidth: ");Serial.println(LoRa.getSignalBandwidth());
   Serial.print("LoRa.getSpreadingFactor: ");Serial.println(LoRa.getSpreadingFactor());
   Serial.print("LoRa.readRegister RegModemConfig1(0x1d): ");Serial.print("B");Serial.println(LoRa.readRegister(0x1d),BIN);
   Serial.print("LoRa.readRegister RegPaDac(high power)(0x4d): "); Serial.print("0x");Serial.println(LoRa.readRegister(0x4d),HEX);
   Serial.print("LoRa.readRegister RegLna(0x0C): ");Serial.print("B");Serial.println(LoRa.readRegister(0x0C),BIN);
   byte b = B00100011; // = "00100011";
-  Serial.print("Convert b to hex value: ");Serial.print("0x");Serial.println (b, HEX); // comes to 0x23.
+  // Serial.print("Convert b to hex value: ");Serial.print("0x");Serial.println (b, HEX); // comes to 0x23.
   
 }
 
