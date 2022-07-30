@@ -103,12 +103,35 @@ gnome-terminal --geometry=59x12-1100+300 -- bash -c "sshpass -p "whales" ssh -t 
 ; exec bash"
 
 sleep 5
+
 # masterdog: 192.168.1.161
 gnome-terminal --geometry=59x12-550+300 -- bash -c "sshpass -p "whales" ssh -t pi@192.168.1.161 -o StrictHostKeyChecking=no \
 /home/pi/Desktop/ROS_startup_scripts/dog_arduino_rosserial/dog_arduino_rx/./terminal_1.sh \
 ; exec bash"
 
 sleep 1
+
+# masterdog: 192.168.1.161
+gnome-terminal --geometry=59x12-550+300 -- bash -c "sshpass -p "whales" ssh -t pi@192.168.1.161 -o StrictHostKeyChecking=no \
+/home/pi/Desktop/ROS_startup_scripts/dog_arduino_rosserial/dog_arduino_rx/./terminal_2.sh \
+; exec bash"
+
+sleep 1
+
+# masterdog: 192.168.1.161
+gnome-terminal --geometry=59x12-550+300 -- bash -c "sshpass -p "whales" ssh -t pi@192.168.1.161 -o StrictHostKeyChecking=no \
+/home/pi/Desktop/ROS_startup_scripts/dog_arduino_rosserial/dog_arduino_rx/./terminal_3.sh \
+; exec bash"
+
+sleep 1
+
+# masterdog: 192.168.1.161
+gnome-terminal --geometry=59x12-550+300 -- bash -c "sshpass -p "whales" ssh -t pi@192.168.1.161 -o StrictHostKeyChecking=no \
+/home/pi/Desktop/ROS_startup_scripts/dog_arduino_rosserial/dog_arduino_rx/./terminal_4.sh \
+; exec bash"
+
+sleep 1
+
 # slavedog: 192.168.1.236
 gnome-terminal --geometry=59x12-0+300 -- bash -c "sshpass -p "whales" ssh -t pi@192.168.1.236 -o StrictHostKeyChecking=no \
 ./dog_slave_satellite_correction.sh \
