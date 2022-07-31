@@ -16,7 +16,7 @@ ros::NodeHandle  nh;
 
 const long frequency = 432.0E6;  // LoRa Frequency
 const long bandWidth = 125000;  // LoRa Bandwidth (smaller = longer range)
-int spreading = 7;             // spreading factor ranges from 6-12,default 7 (larger = longer range)
+int spreading = 9;             // spreading factor ranges from 6-12,default 7 (larger = longer range)
 const int csPin = 39;          // LoRa radio chip select
 const int resetPin = 18;        // LoRa radio reset
 const int irqPin = 20;          // change for your board; must be a hardware interrupt pin
