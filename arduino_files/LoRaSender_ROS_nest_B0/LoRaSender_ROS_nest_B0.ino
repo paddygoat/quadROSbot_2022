@@ -5,6 +5,8 @@
 #include <std_msgs/Char.h>
 #include <std_msgs/String.h>
 
+// USB3
+
 std_msgs::String chatter;
 std_msgs::String correction_data_msg_B0;
 std_msgs::String cycle_time_msg;
@@ -12,8 +14,8 @@ ros::Publisher chatter1("nest_cycle_time", &cycle_time_msg);
 
 ros::NodeHandle  nh;
 
-const long frequency = 433.5E6;  // LoRa Frequency
-const long bandWidth = 250000;  // LoRa Bandwidth (smaller = longer range)
+const long frequency = 430.0E6;  // LoRa Frequency
+const long bandWidth = 125000;  // LoRa Bandwidth (smaller = longer range)
 int spreading = 7;             // spreading factor ranges from 6-12,default 7 (larger = longer range)
 const int csPin = 39;          // LoRa radio chip select
 const int resetPin = 18;        // LoRa radio reset
@@ -21,7 +23,7 @@ const int irqPin = 20;          // change for your board; must be a hardware int
 const int syncWord = 0x33;
 byte localAddress = 0xB0;     // address of this device
 byte destination = 0xA0;      // destination to send to
-const int codingRate = 8;     // ranges from 5 to 8. 8 gives better error resistance.
+const int codingRate = 5;     // ranges from 5 to 8. 8 gives better error resistance.
 
 unsigned long prevMillis_MCU_ID;
 const long interval_MCU_ID = 10000;
@@ -77,6 +79,7 @@ void messageCb2( const std_msgs::String chatter)
 }
 void messageCb3( const std_msgs::String correction_data_msg_B0)
 {
+  digitalWrite(blue_pin, HIGH);
   unsigned long currentMicros1 = micros();
   // digitalWrite(orange_pin, HIGH-digitalRead(orange_pin));   // toggle the led
   correction_data = correction_data_msg_B0.data; // String
@@ -88,15 +91,14 @@ void messageCb3( const std_msgs::String correction_data_msg_B0)
   // wait until the radio is ready to send a packet
   while (LoRa.beginPacket() == 0) 
   {
-    Serial.print("waiting for radio ... ");
+    // Serial.print("waiting for radio ... ");
   }
 
-  Serial.print("Sending packet: ");
+  // Serial.print("Sending packet: ");
 
   // Outgoing data seems to be 46 characters max at a time:
   // String outgoing = "46_characters_++++++++++++++++++++++++++++++++";
 
-  digitalWrite(blue_pin, HIGH);
   LoRa.beginPacket();
   LoRa.write(destination);              // add destination address
   LoRa.write(localAddress);             // add sender address
@@ -106,7 +108,7 @@ void messageCb3( const std_msgs::String correction_data_msg_B0)
   // LoRa.endPacket(true); // true = async / non-blocking mode
   LoRa.endPacket(); // true = async / non-blocking mode
   
-  digitalWrite(blue_pin, LOW);
+
   msgCount++;
   // if (correction_data == "finish")
   // {
@@ -117,6 +119,7 @@ void messageCb3( const std_msgs::String correction_data_msg_B0)
   // myString.toCharArray(buf, len)
   cycle_time_msg.data = cycle_time;
   chatter1.publish( &cycle_time_msg );
+  digitalWrite(blue_pin, LOW);
 }
 
 // ros::Subscriber<std_msgs::Empty> sub1("toggle_led", &messageCb1 );
