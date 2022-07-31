@@ -165,7 +165,6 @@ void onReceive(int packetSize)
   // Serial.println(" Message ID: " + String(incomingMsgId));
   // Serial.println("Message incomingLength: " + String(incomingLength));
 
- /*
   if (previous_incomingMsgId != (incomingMsgId - 0x01) && (incomingMsgId != 0x00))
   {
     // Serial.println("An incoming message was missed - slow down the data transmit rate !!");
@@ -175,7 +174,7 @@ void onReceive(int packetSize)
     digitalWrite(red_pin,LOW);
   }
   previous_incomingMsgId = int(incomingMsgId);
-  */
+
 
   str_msg.data = inChar;
   // char hello[13] = "hello world!";
