@@ -3,19 +3,21 @@
 #include <ros.h>
 #include <std_msgs/String.h>
 
+// USB2
+
 ros::NodeHandle  nh;
 std_msgs::String str_msg;
 ros::Publisher pub_A0("correction_data_from_nest_A0", &str_msg);
 
-const long frequency = 433.5E6;  // LoRa Frequency
-const long bandWidth = 250000;  // LoRa Bandwidth (smaller = longer range)
-int spreading = 7;             // spreading factor ranges from 6-12,default 7 (larger = longer range)
+const long frequency = 430.0E6;  // LoRa Frequency
+const long bandWidth = 125000;  // LoRa Bandwidth (smaller = longer range)
+int spreading = 9;             // spreading factor ranges from 6-12,default 7 (larger = longer range)
 const int csPin = 39;          // LoRa radio chip select
 const int resetPin = 18;        // LoRa radio reset
 const int irqPin = 20;          // change for your board; must be a hardware interrupt pin
 const int syncWord = 0x33;
 const int intended_recipient = 0xA0;
-const int codingRate = 8;     // ranges from 5 to 8. 8 gives better error resistance.
+const int codingRate = 5;     // ranges from 5 to 8. 8 gives better error resistance.
 
 unsigned long prevMillis_MCU_ID;
 const long interval_MCU_ID = 10000;
@@ -83,6 +85,7 @@ void setup()
   digitalWrite(orange_pin,LOW);
   digitalWrite(red_pin,LOW);
   delay(5000);
+
   Serial.println("");
   Serial.println("I am MCU_A0");
   Serial.println("LoRa Receiver Callback");
@@ -98,7 +101,6 @@ void setup()
   LoRa.setCodingRate4(codingRate);     // ranges from 5 to 8.
   LoRa.setSpreadingFactor(spreading);           // ranges from 6-12,default 7 see API docs
   LoRa.setSyncWord(syncWord);
-  Serial.println("LoRa init succeeded.");
   // LoRa.setGain(6);   // Ranges from 0 to 6 where 6 is max.
   // LoRa.writeRegister(0x0C,0x23);  // This should be max LNA gain.
   
@@ -111,7 +113,7 @@ void setup()
   Serial.print("LoRa.readRegister RegPaDac(high power)(0x4d): "); Serial.print("0x");Serial.println(LoRa.readRegister(0x4d),HEX);
   Serial.print("LoRa.readRegister RegLna(0x0C): ");Serial.print("B");Serial.println(LoRa.readRegister(0x0C),BIN);
   byte b = B00100011; // = "00100011";
-  Serial.print("Convert b to hex value: ");Serial.print("0x");Serial.println (b, HEX); // comes to 0x23.
+  // Serial.print("Convert b to hex value: ");Serial.print("0x");Serial.println (b, HEX); // comes to 0x23.
   
   // Uncomment the next line to disable the default AGC and set LNA gain, values between 1 - 6 are supported
   // LoRa.setGain(6);
@@ -152,7 +154,6 @@ void onReceive(int packetSize)
       inChar[i] = (char)LoRa.read();
       // Serial.print(inChar[i]);
     }
-    digitalWrite(blue_pin, LOW);
 
   // Serial.print("'");
   // print RSSI of packet
@@ -180,6 +181,7 @@ void onReceive(int packetSize)
   // str_msg.data = hello;
   pub_A0.publish( &str_msg );
   nh.spinOnce();
+  digitalWrite(blue_pin, LOW);
   }
 }
 
